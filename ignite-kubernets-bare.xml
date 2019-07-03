@@ -15,7 +15,7 @@
          <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
            <property name="namespace" value="default"/>
 		   <property name="servicename" value="ignite"/>
-		   <property name="masterurl" value="100.64.11.23:9042"/>
+		   <property name="masterurl" value="https://api-mes-k8s-local-3akmf5-47551496.us-east-2.elb.amazonaws.com"/>
          </bean>
       </property>
     </bean>
