@@ -18,29 +18,97 @@
 -->
 
 <!--
-    Configuration example with Kubernetes IP finder enabled.
+    Ignite configuration with all defaults and enabled p2p deployment and enabled events.
 -->
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd">
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+    <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+        <!-- Set to true to enable distributed class loading for examples, default is false. -->
 
-    <bean class="org.apache.ignite.configuration.IgniteConfiguration">
+        <!-- Enable task execution events for examples. -->
+        <property name="includeEventTypes">
+            <list>
+                <!--Task execution events-->
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_STARTED"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_FINISHED"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_FAILED"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_TIMEDOUT"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_SESSION_ATTR_SET"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_REDUCED"/>
+
+                <!--Cache events-->
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_PUT"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_READ"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_REMOVED"/>
+            </list>
+        </property>
 
         <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
-        <property name="discoverySpi">
-            <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
-                <property name="ipFinder">
-                    <!--
-                        Enables Kubernetes IP finder with default settings.
-                    -->
-                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
-                        <!-- Assumed that you have RBAC configured and `ignite` namespace created for it. -->
-                        <property name="namespace" value="ignite"/>
+	<property name="discoverySpi">
+		<bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+		<property name="ipFinder">
+		<!--
+			Enables Kubernetes IP finder and setting custom namespace name.
+		-->
+			<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
+				<property name="namespace" value="ignite"/>
+			</bean>
+		</property>
+		</bean>
+	</property>
+		    <property name="cacheConfiguration">
+        <list>
+            <bean class="org.apache.ignite.configuration.CacheConfiguration">
+                <property name="name" value="mbsPricing"></property>
+                <!-- Enable readThrough-->
+                <property name="readThrough" value="true"></property>
+                <property name="writeThrough" value="true"></property>
+                <!-- Set cacheStoreFactory-->
+                <property name="cacheStoreFactory">
+                    <bean class="javax.cache.configuration.FactoryBuilder" factory-method="factoryOf">
+                        <constructor-arg value="com.mes.poc.tem.mc.cachestore.MbsPricingStore"></constructor-arg>
                     </bean>
                 </property>
+                <property name="queryEntities">
+                    <list>
+                        <bean class="org.apache.ignite.cache.QueryEntity">
+                            <property name="keyType" value="java.lang.Long"></property>
+                            <property name="valueType" value="com.mes.poc.tem.mc.vo.MbsPricing"></property>
+                            <property name="fields">
+                                <map>
+                                    <entry key="rec_id" value="java.lang.Long"></entry>
+									<entry key="merchant_number" value="java.lang.Long"></entry>
+                                    <entry key="item_type" value="java.lang.Long"></entry>
+                                    <entry key="item_subclass" value="java.lang.String"></entry>
+                                    <entry key="rate" value="java.lang.Long"></entry>
+									<entry key="per_item" value="java.lang.Long"></entry>
+									<entry key="volume_type" value="java.lang.Long"></entry>
+									<entry key="billing_months" value="java.lang.String"></entry>
+									<entry key="valid_date_begin" value="java.sql.Date"></entry>
+									<entry key="valid_date_end" value="java.sql.Date"></entry>
+									<entry key="date_created" value="java.sql.Date"></entry>
+									<entry key="created_by" value="java.lang.Long"></entry>
+									<entry key="last_modified" value="java.sql.Date"></entry>
+									<entry key="modified_by" value="java.lang.Long"></entry>
+                                </map>
+                            </property>
+                        </bean>
+                    </list>
+                </property>
             </bean>
-        </property>
+        </list>
+    </property>
     </bean>
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+    <property name="driverClassName" value="org.postgresql.Driver"></property>
+    <property name="url" value="jdbc:postgresql://mespostgresdb.ca3lm8sxl2ye.us-east-2.rds.amazonaws.com:5432/mes"></property>
+    <property name="username" value="mespostgres"></property>
+    <property name="password" value="MESPostgres091"></property>
+</bean>
 </beans>
