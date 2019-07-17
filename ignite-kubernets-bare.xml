@@ -60,14 +60,10 @@
                     -->
                     <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
                     <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">-->
-                    <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">
-                        <property name="addresses">
-                            <list>
-                                <!-- In distributed environment, replace with actual host IP address. -->
-                           	<value>100.69.223.199</value>
-                            </list>
-                        </property>
-                    </bean>
+		<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
+   			<property name="namespace" value="ignite"/>
+   			<property name="serviceName" value="ignite"/>
+		</bean>
                 </property>
             </bean>
         </property>
