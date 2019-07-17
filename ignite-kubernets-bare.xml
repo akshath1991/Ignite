@@ -61,7 +61,7 @@
                     <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
                     <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">-->
 		<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
-   			<property name="namespace" value="test"/>
+   			<property name="namespace" value="ignite"/>
    			<property name="serviceName" value="ignite"/>
 			<property name="masterUrl" value="https://api-mes-k8s-local-3akmf5-47551496.us-east-2.elb.amazonaws.com"/>
 		</bean>
