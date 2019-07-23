@@ -38,7 +38,8 @@
                     <bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">
                         <!-- Assumed that you have RBAC configured and `ignite` namespace created for it. -->
                         <property name="namespace" value="ignite"/>
-                        <property name="masterUrl" value="https://admin:1HwoaBbA6JHNPINS494TbGx4immRQTQH@api-aswin-k8s-local-7pi7vl-1884397862.ap-south-1.elb.amazonaws.com"/>
+                        <property name="masterUrl" value="https://api-aswin-k8s-local-7pi7vl-1884397862.ap-south-1.elb.amazonaws.com"/>
+                        <property name="accountToken" value="/home/ubuntu/ignite/token"/>
                     </bean>
                 </property>
             </bean>
