@@ -258,52 +258,6 @@
                     </list>
                 </property>
             </bean>
-		<bean class="org.apache.ignite.configuration.CacheConfiguration">
-					<property name="name" value="mbsDailySummary"></property>
-					<!-- Enable readThrough-->
-					<property name="readThrough" value="true"></property>
-					<property name="writeThrough" value="true"></property>
-					<!-- Set cacheStoreFactory-->
-					<property name="cacheStoreFactory">
-						<bean class="javax.cache.configuration.FactoryBuilder" factory-method="factoryOf">
-							<constructor-arg value="com.mes.poc.mc.cachestore.MbsDailySummaryStore"></constructor-arg>
-						</bean>
-					</property>
-					<property name="queryEntities">
-						<list>
-							<bean class="org.apache.ignite.cache.QueryEntity">
-								<property name="keyType" value="java.lang.Long"></property>
-								<property name="valueType" value="com.mes.poc.mc.model.MbsDailySummary"></property>
-								<property name="fields">
-									<map>
-										<entry key="recId" value="java.lang.Long"></entry>
-										<entry key="merchantNumber" value="java.lang.Long"></entry>
-										<entry key="activityDate" value="java.lang.Date"></entry>
-										<entry key="itemType" value="java.lang.Integer"></entry>
-										<entry key="itemSubclass" value="java.lang.String"></entry>
-										<entry key="icCat" value="java.lang.String"></entry>
-										<entry key="itemCount" value="java.lang.Integer"></entry>
-										<entry key="itemAmount" value="java.lang.Double"></entry>
-										<entry key="salesCount" value="java.sql.Integer"></entry>
-										<entry key="salesAmount" value="java.sql.Double"></entry>
-										<entry key="creditsCount" value="java.sql.Ineteger"></entry>
-										<entry key="creditsAmount" value="java.lang.Double"></entry>
-										<entry key="rate" value="java.sql.Double"></entry>
-										<entry key="perItem" value="java.lang.Double"></entry>
-										<entry key="feesDue" value="java.lang.Double"></entry>
-										<entry key="feesPaid" value="java.lang.Double"></entry>
-										<entry key="expense" value="java.lang.Expense"></entry>
-										<entry key="dataSource" value="java.lang.String"></entry>
-										<entry key="dataSourceId" value="java.lang.Long"></entry>
-										<entry key="meLoadFilename" value="java.lang.String"></entry>
-										<entry key="meLoadFileId" value="java.lang.Long"></entry>
-										<entry key="expenseActual" value="java.lang.Double"></entry>
-									</map>
-								</property>
-							</bean>
-						</list>
-					</property>
-				</bean>
         </list>
     </property>
     </bean>
