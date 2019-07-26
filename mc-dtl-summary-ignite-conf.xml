@@ -307,6 +307,12 @@
         </list>
     </property>
     </bean>
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+    <property name="driverClassName" value="org.postgresql.Driver"></property>
+    <property name="url" value="jdbc:postgresql://mespostgresdb.ca3lm8sxl2ye.us-east-2.rds.amazonaws.com:5432/mes"></property>
+    <property name="username" value="mespostgres"></property>
+    <property name="password" value="MESPostgres091"></property>
+</bean>
 	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="mysqldatasource">
     <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
     <property name="url" value="jdbc:mysql://mesmysqldb.ca3lm8sxl2ye.us-east-2.rds.amazonaws.com:3306/master_card"></property>
