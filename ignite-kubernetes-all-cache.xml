@@ -255,7 +255,10 @@
                                 </map>
                             </property>
                         </bean>
-			<bean class="org.apache.ignite.configuration.CacheConfiguration">
+                    </list>
+                </property>
+            </bean>
+		<bean class="org.apache.ignite.configuration.CacheConfiguration">
 					<property name="name" value="mbsDailySummary"></property>
 					<!-- Enable readThrough-->
 					<property name="readThrough" value="true"></property>
@@ -301,9 +304,6 @@
 						</list>
 					</property>
 				</bean>
-                    </list>
-                </property>
-            </bean>
         </list>
     </property>
     </bean>
