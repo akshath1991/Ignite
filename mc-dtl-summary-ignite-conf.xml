@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+
+  contributor license agreements.  See the NOTICE file distributed with
+
+  this work for additional information regarding copyright ownership.
+
+  The ASF licenses this file to You under the Apache License, Version 2.0
+
+  (the "License"); you may not use this file except in compliance with
+
+  the License.  You may obtain a copy of the License at
+
+
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+
+
+  Unless required by applicable law or agreed to in writing, software
+
+  distributed under the License is distributed on an "AS IS" BASIS,
+
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+
+  See the License for the specific language governing permissions and
+
+  limitations under the License.
+
+-->
+
+
+
+<!--
+
+    Ignite configuration with all defaults and enabled p2p deployment and enabled events.
+
+-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="ignite.cfg" class="org.apache.ignite.configuration.IgniteConfiguration">
+        <!-- Set to true to enable distributed class loading for examples, default is false. -->
+        <!-- Enable task execution events for examples. -->
+        <property name="includeEventTypes">
+            <list>
+                <!--Task execution events-->
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_STARTED"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_FINISHED"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_FAILED"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_TIMEDOUT"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_SESSION_ATTR_SET"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_TASK_REDUCED"/>
+                <!--Cache events-->
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_PUT"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_READ"/>
+                <util:constant static-field="org.apache.ignite.events.EventType.EVT_CACHE_OBJECT_REMOVED"/>
+            </list>
+        </property>
+        <!-- Explicitly configure TCP discovery SPI to provide list of initial nodes. -->
+        <property name="discoverySpi">
+            <bean class="org.apache.ignite.spi.discovery.tcp.TcpDiscoverySpi">
+                <property name="ipFinder">
+                    <!--
+                        Ignite provides several options for automatic discovery that can be used
+                        instead os static IP based discovery. For information on all options refer
+                        to our documentation: http://apacheignite.readme.io/docs/cluster-config
+                    -->
+                    <!-- Uncomment static IP finder to enable static-based discovery of initial nodes. -->
+                    <!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.vm.TcpDiscoveryVmIpFinder">-->
+					<!--<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.kubernetes.TcpDiscoveryKubernetesIpFinder">-->
+					<bean class="org.apache.ignite.spi.discovery.tcp.ipfinder.multicast.TcpDiscoveryMulticastIpFinder">
+                       <property name="addresses">
+                           <list>
+                               <!-- In distributed environment, replace with actual host IP address. -->
+                               <value>localhost</value>
+                           </list>
+                       </property>
+                   </bean>
+				</property>
+            </bean>
+        </property>
+		<property name="cacheConfiguration">
+			<list>
+				<bean class="org.apache.ignite.configuration.CacheConfiguration">
+					<property name="name" value="mbsDailySummary"></property>
+					<!-- Enable readThrough-->
+					<property name="readThrough" value="true"></property>
+					<property name="writeThrough" value="true"></property>
+					<!-- Set cacheStoreFactory-->
+					<property name="cacheStoreFactory">
+						<bean class="javax.cache.configuration.FactoryBuilder" factory-method="factoryOf">
+							<constructor-arg value="com.mes.poc.mc.cachestore.MbsDailySummaryStore"></constructor-arg>
+						</bean>
+					</property>
+					<property name="queryEntities">
+						<list>
+							<bean class="org.apache.ignite.cache.QueryEntity">
+								<property name="keyType" value="java.lang.Long"></property>
+								<property name="valueType" value="com.mes.poc.mc.model.MbsDailySummary"></property>
+								<property name="fields">
+									<map>
+										<entry key="recId" value="java.lang.Long"></entry>
+										<entry key="merchantNumber" value="java.lang.Long"></entry>
+										<entry key="activityDate" value="java.lang.Date"></entry>
+										<entry key="itemType" value="java.lang.Integer"></entry>
+										<entry key="itemSubclass" value="java.lang.String"></entry>
+										<entry key="icCat" value="java.lang.String"></entry>
+										<entry key="itemCount" value="java.lang.Integer"></entry>
+										<entry key="itemAmount" value="java.lang.Double"></entry>
+										<entry key="salesCount" value="java.sql.Integer"></entry>
+										<entry key="salesAmount" value="java.sql.Double"></entry>
+										<entry key="creditsCount" value="java.sql.Ineteger"></entry>
+										<entry key="creditsAmount" value="java.lang.Double"></entry>
+										<entry key="rate" value="java.sql.Double"></entry>
+										<entry key="perItem" value="java.lang.Double"></entry>
+										<entry key="feesDue" value="java.lang.Double"></entry>
+										<entry key="feesPaid" value="java.lang.Double"></entry>
+										<entry key="expense" value="java.lang.Expense"></entry>
+										<entry key="dataSource" value="java.lang.String"></entry>
+										<entry key="dataSourceId" value="java.lang.Long"></entry>
+										<entry key="meLoadFilename" value="java.lang.String"></entry>
+										<entry key="meLoadFileId" value="java.lang.Long"></entry>
+										<entry key="expenseActual" value="java.lang.Double"></entry>
+									</map>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+    </bean>
+
+	<bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+    <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"></property>
+    <property name="url" value="jdbc:mysql://mesmysqldb.ca3lm8sxl2ye.us-east-2.rds.amazonaws.com:3306/master_card"></property>
+    <property name="username" value="mesmysql"></property>
+    <property name="password" value="MESMySql091"></property>
+
+</bean>
+
+</beans>
